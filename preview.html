@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Preview — Radial Skill Tree (interactive)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root { --green: #92c83e; --deep: #107c10; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    min-height: 100vh;
+    font-family: "Inter", system-ui, sans-serif;
+    color: #23271f;
+    background: linear-gradient(180deg, #f0f2f0 0%, #b8beb8 42%, #4d524d 100%);
+    background-attachment: fixed;
+  }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 22px 28px; }
+
+  header { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .brand { font-family: "Rajdhani"; font-weight: 600; font-size: 13px; letter-spacing: .3em; text-transform: uppercase; color: #525252; }
+  .brand b { color: var(--deep); font-weight: 700; }
+  .chip { display: flex; align-items: center; gap: 12px; border: 1px solid rgba(255,255,255,.7); background: rgba(255,255,255,.72); border-radius: 12px; padding: 8px 12px; box-shadow: 0 10px 24px -14px rgba(0,0,0,.45); }
+  .avatar { display: grid; place-items: center; height: 40px; width: 40px; font-size: 18px; border-radius: 12px; background: linear-gradient(135deg, var(--green), var(--deep)); color: #fff; font-family: "Rajdhani"; font-weight: 700; }
+  .name { font-family: "Rajdhani"; font-weight: 600; font-size: 14px; color: #262626; }
+  .status { display: inline-flex; align-items: center; gap: 5px; font-size: 10px; text-transform: uppercase; letter-spacing: .08em; color: var(--deep); font-weight: 500; }
+  .sdot { height: 8px; width: 8px; border-radius: 50%; background: var(--green); }
+  .sub { font-size: 11px; color: #737373; }
+
+  nav { margin-top: 26px; }
+  .blades { display: flex; align-items: flex-end; gap: 28px; list-style: none; }
+  .blade { display: flex; align-items: center; gap: 8px; padding-bottom: 8px; position: relative; }
+  .blade .ico { font-size: 18px; color: #737373; }
+  .blade .lbl { font-family: "Rajdhani"; text-transform: uppercase; font-weight: 500; font-size: 14px; color: #737373; }
+  .blade.active .ico { color: var(--deep); }
+  .blade.active .lbl { font-weight: 600; font-size: 20px; color: #171717; }
+  .blade.active::after { content: ""; position: absolute; left: 0; bottom: -4px; height: 3px; width: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--green), var(--deep)); }
+  .rule { margin-top: 4px; height: 1px; width: 100%; background: linear-gradient(90deg, rgba(0,0,0,.25), rgba(0,0,0,.1), transparent); }
+
+  .kicker { margin-top: 28px; font-size: 11px; font-weight: 600; letter-spacing: .25em; text-transform: uppercase; color: var(--deep); }
+  h2 { font-family: "Rajdhani"; font-size: 30px; font-weight: 700; color: #171717; }
+  .legend { display: flex; gap: 20px; margin: 14px 0 16px; font-size: 12px; color: #525252; align-items: center; flex-wrap: wrap; }
+  .legend .row { display: inline-flex; align-items: center; gap: 6px; }
+  .ldot { height: 12px; width: 12px; border-radius: 50%; border: 2px solid var(--deep); }
+  .ldot.low { border-color: #9a9a9a; border-style: dashed; }
+
+  .layout { display: flex; flex-direction: column; gap: 24px; align-items: center; }
+  .hub { width: 100%; max-width: 520px; }
+  .hub svg { width: 100%; height: auto; user-select: none; display: block; }
+  .panel { width: 100%; max-width: 520px; }
+  @media (min-width: 1000px) {
+    .layout { flex-direction: row; align-items: center; gap: 32px; }
+    .hub { flex: 1; }
+    .panel { width: 330px; flex-shrink: 0; }
+  }
+
+  .seg { cursor: pointer; transition: stroke .3s ease, stroke-width .3s ease, opacity .3s ease; }
+  .branch { transition: opacity .4s ease; }
+  .conn, .bud { transition: stroke .25s ease, stroke-width .25s ease, cx .45s cubic-bezier(.22,1,.36,1), cy .45s cubic-bezier(.22,1,.36,1); }
+  .slink { transition: x2 .5s cubic-bezier(.22,1,.36,1), y2 .5s cubic-bezier(.22,1,.36,1), stroke .25s ease, stroke-width .25s ease; }
+  .snode { cursor: pointer; transform-box: fill-box; transform-origin: center; transition: transform .5s cubic-bezier(.22,1,.36,1), color .25s ease; }
+
+  .pcard { animation: fade .25s ease; }
+  @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .pcardwrap { border: 1px solid rgba(255,255,255,.7); background: rgba(255,255,255,.72); border-radius: 16px; padding: 20px; box-shadow: 0 10px 24px -14px rgba(0,0,0,.45); }
+  .proot { display: flex; align-items: center; gap: 12px; }
+  .pmono { height: 40px; width: 40px; display: grid; place-items: center; border-radius: 12px; background: linear-gradient(135deg, var(--green), var(--deep)); color: #fff; font-family: "Rajdhani"; font-weight: 700; font-size: 13px; }
+  .pname { font-family: "Rajdhani"; font-weight: 600; font-size: 18px; color: #171717; line-height: 1.1; }
+  .ptag { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: #737373; }
+  .plist { margin-top: 14px; list-style: none; }
+  .leaf { display: flex; align-items: center; height: 38px; gap: 10px; }
+  .picon { height: 28px; width: 28px; flex-shrink: 0; display: grid; place-items: center; border-radius: 8px; border: 1px solid #d4d4d4; background: #fff; color: var(--deep); }
+  .picon svg { height: 16px; width: 16px; }
+  .lname { font-size: 13.5px; color: #404040; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ntag { flex-shrink: 0; border-radius: 4px; background: #e5e5e5; padding: 2px 6px; font-size: 10px; text-transform: uppercase; color: #525252; }
+  .pips { margin-left: auto; flex-shrink: 0; display: flex; gap: 4px; }
+  .pip { height: 6px; width: 6px; border-radius: 50%; background: #d0d0d0; }
+  .pip.on { background: var(--deep); }
+
+  .note { max-width: 1120px; margin: 0 auto; padding: 22px 28px 28px; }
+  .note div { background: rgba(255,255,255,.85); border: 1px solid rgba(0,0,0,.12); border-radius: 12px; padding: 12px 16px; font-size: 12.5px; color: #404040; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">Tanroj <b>//</b> Dashboard</div>
+      <div class="chip">
+        <div class="avatar">TB</div>
+        <div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span class="name">Tanroj Billing</span>
+            <span class="status"><span class="sdot"></span>Online</span>
+          </div>
+          <div class="sub">2,026 G • Turlock, CA</div>
+        </div>
+      </div>
+    </header>
+
+    <nav>
+      <ul class="blades">
+        <li class="blade"><span class="ico">⌂</span><span class="lbl">home</span></li>
+        <li class="blade"><span class="ico">▦</span><span class="lbl">projects</span></li>
+        <li class="blade"><span class="ico">✦</span><span class="lbl">experience</span></li>
+        <li class="blade active"><span class="ico">◇</span><span class="lbl">skills</span></li>
+        <li class="blade"><span class="ico">☉</span><span class="lbl">about</span></li>
+        <li class="blade"><span class="ico">✉</span><span class="lbl">contact</span></li>
+      </ul>
+      <div class="rule"></div>
+    </nav>
+
+    <div class="kicker">My loadout</div>
+    <h2>Skill Tree</h2>
+    <div class="legend">
+      <span class="row">Hover a branch to expand it</span>
+      <span class="row"><span class="ldot"></span>core</span>
+      <span class="row"><span class="ldot low"></span>learning</span>
+    </div>
+
+    <div class="layout">
+      <div class="hub"><svg id="hub" viewBox="0 0 1000 1000" role="img" aria-label="Radial skill tree"></svg></div>
+      <div class="panel"><div class="pcardwrap" id="panel"></div></div>
+    </div>
+  </div>
+
+  <div class="note">
+    <div><strong>Note:</strong> Interactive approximation of the real Next.js Skills channel — hover or tap a branch to expand it. The real app uses spring physics; this uses CSS easing. Throwaway preview file — safe to delete anytime.</div>
+  </div>
+
+<script>
+  const ICONS = {
+    shield:'<path d="M12 3 19 6v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z"/>',
+    "shield-check":'<path d="M12 3 19 6v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z"/><path d="M9 11.5l2 2 4-4"/>',
+    search:'<circle cx="11" cy="11" r="6"/><line x1="15.5" y1="15.5" x2="20" y2="20"/>',
+    lock:'<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+    code:'<path d="M9 8 5 12l4 4"/><path d="M15 8l4 4-4 4"/>',
+    braces:'<path d="M9 4C7 4 7 7 7 9s-1 3-2 3c1 0 2 1 2 3s0 5 2 5"/><path d="M15 4c2 0 2 3 2 5s1 3 2 3c-1 0-2 1-2 3s0 5-2 5"/>',
+    typeT:'<path d="M5 6h14"/><path d="M12 6v13"/>',
+    atom:'<circle cx="12" cy="12" r="1.6" fill="currentColor"/><ellipse cx="12" cy="12" rx="10" ry="4"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(120 12 12)"/>',
+    command:'<path d="M6 8l4 4-4 4"/><line x1="12" y1="16" x2="17" y2="16"/>',
+    database:'<ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v12c0 1.7 3.1 3 7 3s7-1.3 7-3V6"/><path d="M5 12c0 1.7 3.1 3 7 3s7-1.3 7-3"/>',
+    fileCode:'<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M10.5 12 9 14l1.5 2"/><path d="M13.5 12 15 14l-1.5 2"/>',
+    hexagon:'<path d="M12 3l7.5 4.3v9.4L12 21l-7.5-4.3V7.3z"/>',
+    coffee:'<path d="M5 8h11v5a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4z"/><path d="M16 9h2.5a2 2 0 0 1 0 4H16"/><line x1="8" y1="3" x2="8" y2="5.5"/><line x1="12" y1="3" x2="12" y2="5.5"/>',
+    plug:'<path d="M9 3v5"/><path d="M15 3v5"/><path d="M7 8h10v3a5 5 0 0 1-10 0z"/><path d="M12 16v5"/>',
+    devices:'<rect x="3" y="5" width="13" height="9" rx="1"/><rect x="14" y="10" width="7" height="9" rx="1"/>',
+    layers:'<path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/>',
+    rocket:'<path d="M12 3c3 2 4.5 5 4.5 9L14 14.5h-4L7.5 12c0-4 1.5-7 4.5-9z"/><circle cx="12" cy="9" r="1.5"/><path d="M10 14.5 8 19l2.5-1"/><path d="M14 14.5 16 19l-2.5-1"/>',
+    terminal:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9l3 3-3 3"/><line x1="12" y1="15" x2="16" y2="15"/>',
+    containers:'<path d="M3 8 6 5h12l3 3"/><rect x="3" y="8" width="18" height="9" rx="1"/><line x1="9" y1="8" x2="9" y2="17"/><line x1="15" y1="8" x2="15" y2="17"/>',
+    cube:'<path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M4 7.5 12 12l8-4.5"/><path d="M12 12v9"/>',
+    server:'<rect x="4" y="4" width="16" height="7" rx="1"/><rect x="4" y="13" width="16" height="7" rx="1"/><circle cx="7.5" cy="7.5" r="0.8" fill="currentColor"/><circle cx="7.5" cy="16.5" r="0.8" fill="currentColor"/>',
+    cloud:'<path d="M7.5 18a4 4 0 0 1-.5-8 5 5 0 0 1 9.6-1A3.5 3.5 0 0 1 16.5 18z"/>',
+    box:'<rect x="4" y="7" width="16" height="13" rx="1"/><path d="M4 11h16"/><path d="M9.5 7V4h5v3"/>',
+    headset:'<path d="M5 13v-1a7 7 0 0 1 14 0v1"/><rect x="3" y="13" width="4" height="6" rx="1.5"/><rect x="17" y="13" width="4" height="6" rx="1.5"/><path d="M19 19a3 3 0 0 1-3 3h-3"/>',
+    cpu:'<rect x="7" y="7" width="10" height="10" rx="1"/><rect x="10" y="10" width="4" height="4"/><path d="M10 3v4M14 3v4M10 17v4M14 17v4M3 10h4M3 14h4M17 10h4M17 14h4"/>',
+    network:'<circle cx="12" cy="5" r="2"/><circle cx="5" cy="18" r="2"/><circle cx="19" cy="18" r="2"/><path d="M12 7v3M11 11l-5 5M13 11l5 5"/>',
+    wrench:'<path d="M16 5a3.5 3.5 0 0 0-4.6 4.6L4 17l-1 4 4-1 7.4-7.4A3.5 3.5 0 0 0 19 8l-2.6 2.6-2.9-2.9z"/>',
+    award:'<circle cx="12" cy="9" r="5"/><path d="M9 13.5 7.5 21 12 18.5 16.5 21 15 13.5"/>'
+  };
+
+  const skillTree = [
+    { id:"cybersecurity", name:"Cybersecurity", monogram:"SEC", tagline:"Defense & analysis", skills:[
+      {name:"Network Security",level:2,icon:"shield"},{name:"Packet Analysis · Wireshark",level:2,icon:"search"},
+      {name:"SQL-Injection Defense",level:2,icon:"shield-check"},{name:"AWS Security",level:1,note:"in progress",icon:"lock"}]},
+    { id:"frontend", name:"Frontend", monogram:"FE", tagline:"UI & web", skills:[
+      {name:"HTML / CSS",level:3,icon:"code"},{name:"JavaScript",level:2,icon:"braces"},{name:"TypeScript",level:2,icon:"typeT"},{name:"React",level:2,icon:"atom"}]},
+    { id:"backend", name:"Backend", monogram:"BE", tagline:"APIs & data", skills:[
+      {name:"Python",level:3,icon:"command"},{name:"SQL / MariaDB",level:2,icon:"database"},{name:"PHP",level:2,icon:"fileCode"},{name:"Node.js",level:2,icon:"hexagon"},{name:"Java / C++",level:2,icon:"coffee"}]},
+    { id:"fullstack", name:"Fullstack", monogram:"FS", tagline:"End-to-end", skills:[
+      {name:"Web APIs",level:2,icon:"plug"},{name:"Responsive Web Apps",level:2,icon:"devices"},{name:"DB-Backed Apps",level:2,icon:"layers"},{name:"Ship to Deploy",level:2,icon:"rocket"}]},
+    { id:"server", name:"Server", monogram:"SRV", tagline:"Infra & systems", skills:[
+      {name:"Linux",level:2,icon:"terminal"},{name:"Docker",level:2,icon:"containers"},{name:"VirtualBox",level:2,icon:"cube"},{name:"Server Management",level:2,icon:"server"}]},
+    { id:"cloud", name:"Cloud", monogram:"CLD", tagline:"AWS & containers", skills:[
+      {name:"AWS (EC2 / Core)",level:2,icon:"cloud"},{name:"Containerized Deploys",level:2,icon:"box"},{name:"Cloud Security",level:1,note:"in progress",icon:"lock"}]},
+    { id:"it", name:"IT Support", monogram:"IT", tagline:"Support & networks", skills:[
+      {name:"IT Support",level:3,icon:"headset"},{name:"Hardware / Software",level:3,icon:"cpu"},{name:"Networking",level:2,icon:"network"},{name:"Troubleshooting",level:3,icon:"wrench"},{name:"Google IT Support",level:3,note:"certified",icon:"award"}]}
+  ];
+
+  const CENTER=500, RING_R=150, RING_W=26, ROOT_R=210, ROOT_NODE_R=22, NODE_BASE=30;
+  const N=skillTree.length, SEG=360/N, GAP=7, DRAWN=SEG-GAP, CIRC=2*Math.PI*RING_R, ARC=(DRAWN/360)*CIRC;
+  const GREEN="#1f9e12", GREEN_DEEP="#107c10", GRAY="#9aa09a", GRAY_SOFT="#bcc2bc";
+  const NS="http://www.w3.org/2000/svg";
+  const el=(t,a)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e;};
+  const polar=(r,deg)=>{const a=deg*Math.PI/180;return [CENTER+r*Math.cos(a),CENTER+r*Math.sin(a)];};
+  const baseAngle=i=>-90+i*SEG;
+  function fanPositions(i,n,radius,spreadMax,step){
+    const a=baseAngle(i); const spread=n<=1?0:Math.min(spreadMax,(n-1)*step);
+    return Array.from({length:n},(_,j)=>polar(radius, n<=1?a:a-spread/2+j*spread/(n-1)));
+  }
+
+  let activeId=skillTree[0].id;
+  const svg=document.getElementById("hub");
+  const panel=document.getElementById("panel");
+  let segEls=[], branchEls=[];
+
+  function build(){
+    segEls = skillTree.map((b,i)=>{
+      const seg=el("circle",{class:"seg",cx:CENTER,cy:CENTER,r:RING_R,fill:"none",stroke:GRAY_SOFT,
+        "stroke-width":RING_W,"stroke-dasharray":ARC+" "+(CIRC-ARC),
+        transform:"rotate("+(baseAngle(i)-DRAWN/2)+" "+CENTER+" "+CENTER+")"});
+      seg.addEventListener("mouseenter",()=>set(b.id));
+      seg.addEventListener("click",()=>set(b.id));
+      svg.appendChild(seg);
+      return seg;
+    });
+    svg.appendChild(el("circle",{cx:CENTER,cy:CENTER,r:RING_R-RING_W/2-6,fill:"rgba(255,255,255,0.45)"}));
+    const t=el("text",{x:CENTER,y:CENTER+15,"text-anchor":"middle","font-weight":700,"font-size":46,fill:"#171717","letter-spacing":4});
+    t.setAttribute("font-family","Rajdhani, sans-serif"); t.textContent="SKILLS"; svg.appendChild(t);
+
+    branchEls = skillTree.map((b,i)=>{
+      const a=baseAngle(i);
+      const [r0x,r0y]=polar(RING_R+RING_W/2,a), [rx,ry]=polar(ROOT_R,a);
+      const g=el("g",{class:"branch"}); g.style.cursor="pointer";
+      const slinks=[], snodes=[];
+      b.skills.forEach(()=>{ const ln=el("line",{class:"slink",x1:rx,y1:ry,x2:rx,y2:ry,stroke:GRAY,"stroke-width":1.5}); g.appendChild(ln); slinks.push(ln); });
+      b.skills.forEach((s)=>{
+        const ng=el("g",{class:"snode"}); ng.style.color=GRAY; ng.style.transform="translate("+rx+"px,"+ry+"px) scale(0.6)";
+        const circ=el("circle",{cx:0,cy:0,r:NODE_BASE,fill:"#fff",stroke:"currentColor","stroke-width":2.5});
+        if(s.level<2) circ.setAttribute("stroke-dasharray","4 4");
+        const ig=el("g",{transform:"translate(-18 -18) scale(1.5)",fill:"none",stroke:"currentColor","stroke-width":2,"stroke-linecap":"round","stroke-linejoin":"round"});
+        ig.innerHTML=ICONS[s.icon]||"";
+        ng.appendChild(circ); ng.appendChild(ig);
+        g.appendChild(ng); snodes.push(ng);
+      });
+      const conn=el("line",{class:"conn",x1:r0x,y1:r0y,x2:rx,y2:ry,stroke:GRAY,"stroke-width":2}); g.appendChild(conn);
+      const bud=el("circle",{class:"bud",cx:rx,cy:ry,r:ROOT_NODE_R,fill:"#fff",stroke:GRAY,"stroke-width":2}); g.appendChild(bud);
+      const mono=el("text",{x:rx,y:ry+4,"text-anchor":"middle","font-weight":700,"font-size":13,fill:"#737373"});
+      mono.setAttribute("font-family","Rajdhani, sans-serif"); mono.textContent=b.monogram; g.appendChild(mono);
+      g.addEventListener("mouseenter",()=>set(b.id));
+      g.addEventListener("click",()=>set(b.id));
+      svg.appendChild(g);
+      return {g,slinks,snodes,conn,bud,mono};
+    });
+  }
+
+  function update(){
+    skillTree.forEach((b,i)=>{
+      const on=b.id===activeId, ref=branchEls[i], seg=segEls[i];
+      seg.setAttribute("stroke",on?GREEN:GRAY_SOFT);
+      seg.setAttribute("stroke-width",on?RING_W+6:RING_W);
+      seg.style.opacity=on?1:0.85;
+      ref.g.style.opacity=on?1:0.42;
+      const n=b.skills.length;
+      const pos=on?fanPositions(i,n,384,64,16):fanPositions(i,n,300,34,9);
+      const stroke=on?GREEN_DEEP:GRAY;
+      b.skills.forEach((s,j)=>{
+        const delay=(on?(0.04+j*0.05):((n-1-j)*0.03))+"s";
+        const ln=ref.slinks[j]; ln.style.transitionDelay=delay;
+        ln.setAttribute("x2",pos[j][0]); ln.setAttribute("y2",pos[j][1]); ln.setAttribute("stroke",stroke); ln.setAttribute("stroke-width",on?2.5:1.5);
+        const ng=ref.snodes[j]; ng.style.transitionDelay=delay;
+        ng.style.transform="translate("+pos[j][0]+"px,"+pos[j][1]+"px) scale("+(on?1:0.6)+")";
+        ng.style.color=stroke;
+      });
+      ref.conn.setAttribute("stroke",on?GREEN:GRAY); ref.conn.setAttribute("stroke-width",on?3:2);
+      ref.bud.setAttribute("stroke",on?GREEN_DEEP:GRAY); ref.bud.setAttribute("stroke-width",on?3:2);
+      ref.mono.setAttribute("fill",on?GREEN_DEEP:"#737373");
+    });
+    renderPanel();
+  }
+
+  function renderPanel(){
+    const b=skillTree.find(x=>x.id===activeId);
+    let rows="";
+    b.skills.forEach(s=>{
+      let pips=""; for(let p=1;p<=3;p++) pips+='<i class="pip'+(p<=s.level?' on':'')+'"></i>';
+      rows+='<li class="leaf"><span class="picon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+(ICONS[s.icon]||"")+'</svg></span>'+
+            '<span class="lname">'+s.name+'</span>'+
+            (s.note?'<span class="ntag">'+s.note+'</span>':'')+
+            '<span class="pips">'+pips+'</span></li>';
+    });
+    panel.innerHTML='<div class="pcard"><div class="proot"><span class="pmono">'+b.monogram+'</span>'+
+      '<div><div class="pname">'+b.name+'</div><div class="ptag">'+b.tagline+'</div></div></div>'+
+      '<ul class="plist">'+rows+'</ul></div>';
+  }
+
+  function set(id){ if(id!==activeId){ activeId=id; update(); } }
+  build();
+  update();
+</script>
+</body>
+</html>

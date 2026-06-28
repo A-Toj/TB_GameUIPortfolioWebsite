@@ -1,0 +1,64 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --xbox-green: #92c83e;
+  --xbox-deep: #107c10;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  color: #23271f;
+  background: #b7bdb7;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+/* --- Dark-gray-to-white dashboard backdrop, with the top sheen baked in ---
+   Both layers are part of the background paint (no separate blurred element),
+   so the backdrop costs nothing to composite. */
+.bg-dashboard {
+  background:
+    radial-gradient(60% 45% at 50% -5%, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0) 60%),
+    linear-gradient(180deg, #f0f2f0 0%, #b8beb8 42%, #4d524d 100%);
+}
+
+/* Hover sheen sweep used by ContentTile */
+@keyframes sweep {
+  0% {
+    transform: translateX(-120%) skewX(-12deg);
+  }
+  100% {
+    transform: translateX(320%) skewX(-12deg);
+  }
+}
+
+/* Scrollbars (dark on light) */
+::-webkit-scrollbar {
+  height: 10px;
+  width: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.22);
+  border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.32);
+}
+
+/* Respect reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
