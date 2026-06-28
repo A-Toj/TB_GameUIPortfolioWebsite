@@ -37,7 +37,18 @@ All content lives in [`lib/data.ts`](lib/data.ts):
 - Drop your resume PDF at `public/resume.pdf` (the "Download Resume" button points there).
 - Optional: add a `public/gamerpic.png` and swap the "TB" initials avatar for an image.
 
-## Deploy
+## Deploy (GitHub Pages)
 
-Push to GitHub, then import the repo into [Vercel](https://vercel.com) — zero config for
-Next.js. Every push to `main` auto-deploys.
+The site is configured for static export to GitHub Pages.
+
+1. Push to `main`. The [`Deploy to GitHub Pages`](.github/workflows/deploy.yml) workflow
+   builds (`next build` → `out/`) and publishes automatically.
+2. One-time setup: in the repo **Settings → Pages → Build and deployment → Source**,
+   select **GitHub Actions**.
+
+Live at `https://a-toj.github.io/TB_GameUIPortfolioWebsite/`.
+
+Notes:
+- `next.config.mjs` sets `basePath` to `/TB_GameUIPortfolioWebsite` in production (root in dev),
+  so update `repo` there if the repository is renamed.
+- `next build` produces a static `out/` — no Node server is needed at runtime.

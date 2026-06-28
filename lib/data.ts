@@ -10,7 +10,7 @@ export const profile = {
   phone: "(209) 216-8047",
   github: "https://github.com/your-handle",
   linkedin: "https://linkedin.com/in/your-handle",
-  resume: "/resume.pdf", // drop a PDF into /public to enable
+  resume: `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/resume.pdf`, // drop a PDF into /public to enable
   bio:
     "Computer Science graduate with a Cybersecurity concentration (CSU Stanislaus) and " +
     "hands-on experience in secure web development, relational database design, and IT " +
