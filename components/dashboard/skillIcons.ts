@@ -12,14 +12,8 @@ export const ICONS: Record<string, string> = {
     '<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
   code:
     '<path d="M9 8 5 12l4 4"/><path d="M15 8l4 4-4 4"/>',
-  braces:
-    '<path d="M9 4C7 4 7 7 7 9s-1 3-2 3c1 0 2 1 2 3s0 5 2 5"/><path d="M15 4c2 0 2 3 2 5s1 3 2 3c-1 0-2 1-2 3s0 5-2 5"/>',
-  typeT:
-    '<path d="M5 6h14"/><path d="M12 6v13"/>',
   atom:
     '<circle cx="12" cy="12" r="1.6" fill="currentColor"/><ellipse cx="12" cy="12" rx="10" ry="4"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(120 12 12)"/>',
-  command:
-    '<path d="M6 8l4 4-4 4"/><line x1="12" y1="16" x2="17" y2="16"/>',
   database:
     '<ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v12c0 1.7 3.1 3 7 3s7-1.3 7-3V6"/><path d="M5 12c0 1.7 3.1 3 7 3s7-1.3 7-3"/>',
   fileCode:

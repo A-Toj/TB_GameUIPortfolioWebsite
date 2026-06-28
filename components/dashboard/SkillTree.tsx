@@ -214,7 +214,6 @@ export default function SkillTree() {
                       }}
                     >
                       <g
-                        className="skill-badge"
                         style={{
                           transform: `scale(${on ? 1 : 0.62})`,
                           transformBox: "fill-box",
