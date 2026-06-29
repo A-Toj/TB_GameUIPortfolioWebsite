@@ -10,6 +10,7 @@ import {
   skills,
   certifications,
   education,
+  media,
 } from "@/lib/data";
 import { ChannelId } from "@/lib/types";
 
@@ -49,6 +50,20 @@ function StripItem({
   width?: string;
 }) {
   return <div className={`shrink-0 snap-start ${width}`}>{children}</div>;
+}
+
+/* Photo card sized to a strip item; object-cover crops to fill without distortion */
+function PhotoTile({ src, alt, label }: { src: string; alt: string; label?: string }) {
+  return (
+    <div className="relative h-full min-h-[260px] overflow-hidden rounded-2xl border border-white/70 bg-white/80 shadow-tile">
+      <img src={src} alt={alt} className="absolute inset-0 h-full w-full object-cover" />
+      {label && (
+        <span className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/55 to-transparent px-4 pb-3 pt-8 font-display text-sm font-semibold uppercase tracking-wide text-white">
+          {label}
+        </span>
+      )}
+    </div>
+  );
 }
 
 function Bullets({ items }: { items: string[] }) {
@@ -96,9 +111,11 @@ export default function ChannelContent({
           {/* Center main piece — gamertag profile */}
           <section className="relative order-1 overflow-hidden rounded-3xl border border-white/70 bg-white/85 p-7 text-center shadow-tile lg:order-2 lg:col-span-2">
             <div className="pointer-events-none absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/70 to-transparent" />
-            <div className="relative mx-auto grid h-28 w-28 place-items-center rounded-2xl bg-gradient-to-br from-xbox-green to-xbox-deep font-display text-5xl font-bold text-white shadow-glow">
-              TB
-            </div>
+            <img
+              src={media.profile}
+              alt={profile.gamertag}
+              className="relative mx-auto h-28 w-28 rounded-2xl object-cover shadow-glow"
+            />
             <p className="relative mt-4 text-xs font-semibold uppercase tracking-[0.2em] text-xbox-deep">
               Signed in
             </p>
@@ -172,29 +189,29 @@ export default function ChannelContent({
       return (
         <div>
           <SectionTitle kicker="Browse my recent" title="Projects" />
-          <Strip>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <PhotoTile src={media.projects} alt="Tanroj Billing" label="The Builder" />
             {projects.map((p) => (
-              <StripItem key={p.title} width="w-[300px] sm:w-[340px]">
-                <ContentTile
-                  eyebrow={p.stack.join(" • ")}
-                  title={p.title}
-                  footer={
-                    <a
-                      href={p.link}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-xs font-semibold text-xbox-deep hover:underline"
-                    >
-                      View on GitHub →
-                    </a>
-                  }
-                >
-                  <p>{p.blurb}</p>
-                  <Bullets items={p.highlights.slice(0, 2)} />
-                </ContentTile>
-              </StripItem>
+              <ContentTile
+                key={p.title}
+                eyebrow={p.stack.join(" • ")}
+                title={p.title}
+                footer={
+                  <a
+                    href={p.link}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-xs font-semibold text-xbox-deep hover:underline"
+                  >
+                    View on GitHub →
+                  </a>
+                }
+              >
+                <p>{p.blurb}</p>
+                <Bullets items={p.highlights.slice(0, 1)} />
+              </ContentTile>
             ))}
-          </Strip>
+          </div>
         </div>
       );
 
@@ -230,49 +247,45 @@ export default function ChannelContent({
       return (
         <div>
           <SectionTitle kicker="Get to know me" title="About" />
-          <Strip>
-            <StripItem width="w-[340px] sm:w-[420px]">
-              <ContentTile eyebrow="Bio" title={profile.gamertag}>
-                <p>{profile.bio}</p>
-              </ContentTile>
-            </StripItem>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <PhotoTile src={media.about} alt={profile.gamertag} label={profile.gamertag} />
 
-            <StripItem width="w-[300px] sm:w-[340px]">
-              <ContentTile eyebrow="Education" title={education.degree}>
-                <p className="text-neutral-700">{education.school}</p>
-                <p className="text-xs text-neutral-500">
-                  {education.location} • {education.graduation}
-                </p>
-                <p className="mt-2 text-xs text-neutral-600">
-                  Coursework: {education.coursework.join(", ")}
-                </p>
-              </ContentTile>
-            </StripItem>
+            <ContentTile eyebrow="Bio" title={profile.gamertag}>
+              <p>{profile.bio}</p>
+            </ContentTile>
 
-            <StripItem width="w-[320px] sm:w-[360px]">
-              <ContentTile eyebrow="Certifications" title="Credentials">
-                <ul className="mt-1 space-y-2">
-                  {certifications.map((c) => (
-                    <li
-                      key={c.name}
-                      className="flex items-center justify-between gap-3 rounded-lg border border-neutral-300/70 bg-white/60 px-3 py-2"
+            <ContentTile eyebrow="Education" title={education.degree}>
+              <p className="text-neutral-700">{education.school}</p>
+              <p className="text-xs text-neutral-500">
+                {education.location} • {education.graduation}
+              </p>
+              <p className="mt-2 text-xs text-neutral-600">
+                Coursework: {education.coursework.join(", ")}
+              </p>
+            </ContentTile>
+
+            <ContentTile eyebrow="Certifications" title="Credentials">
+              <ul className="mt-1 space-y-2">
+                {certifications.map((c) => (
+                  <li
+                    key={c.name}
+                    className="flex items-center justify-between gap-3 rounded-lg border border-neutral-300/70 bg-white/60 px-3 py-2"
+                  >
+                    <span className="text-sm text-neutral-700">{c.name}</span>
+                    <span
+                      className={`shrink-0 rounded-md px-2 py-0.5 text-[11px] font-semibold ${
+                        c.status === "Certified"
+                          ? "bg-xbox-green/30 text-xbox-deep"
+                          : "bg-neutral-200 text-neutral-600"
+                      }`}
                     >
-                      <span className="text-sm text-neutral-700">{c.name}</span>
-                      <span
-                        className={`shrink-0 rounded-md px-2 py-0.5 text-[11px] font-semibold ${
-                          c.status === "Certified"
-                            ? "bg-xbox-green/30 text-xbox-deep"
-                            : "bg-neutral-200 text-neutral-600"
-                        }`}
-                      >
-                        {c.status}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </ContentTile>
-            </StripItem>
-          </Strip>
+                      {c.status}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </ContentTile>
+          </div>
         </div>
       );
 
@@ -280,20 +293,15 @@ export default function ChannelContent({
       return (
         <div>
           <SectionTitle kicker="Get in touch" title="Contact" />
-          <Strip>
-            <StripItem width="w-[220px]">
-              <ContactTile label="Email" value={profile.email} href={`mailto:${profile.email}`} icon="✉" />
-            </StripItem>
-            <StripItem width="w-[220px]">
-              <ContactTile label="GitHub" value="github.com" href={profile.github} icon="▦" />
-            </StripItem>
-            <StripItem width="w-[220px]">
-              <ContactTile label="LinkedIn" value="linkedin.com" href={profile.linkedin} icon="in" />
-            </StripItem>
-            <StripItem width="w-[220px]">
-              <ContactTile label="Resume" value="Download PDF" href={profile.resume} icon="▶" />
-            </StripItem>
-          </Strip>
+          <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
+            <div className="row-span-2">
+              <PhotoTile src={media.contact} alt={profile.gamertag} label="Say hello" />
+            </div>
+            <ContactTile label="Email" value={profile.email} href={`mailto:${profile.email}`} icon="✉" />
+            <ContactTile label="GitHub" value="github.com" href={profile.github} icon="▦" />
+            <ContactTile label="LinkedIn" value="linkedin.com" href={profile.linkedin} icon="in" />
+            <ContactTile label="Resume" value="Download PDF" href={profile.resume} icon="▶" />
+          </div>
         </div>
       );
 

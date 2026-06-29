@@ -10,7 +10,7 @@ const RING_R = 150;
 const RING_W = 26;
 const ROOT_R = 210;
 const ROOT_NODE_R = 22;
-const NODE_BASE = 40; // active node radius; inactive nodes scale down
+const NODE_BASE = 40;
 
 const N = skillTree.length;
 const SEG = 360 / N;
@@ -19,10 +19,23 @@ const DRAWN = SEG - GAP_DEG;
 const CIRC = 2 * Math.PI * RING_R;
 const ARC_LEN = (DRAWN / 360) * CIRC;
 
-const GREEN = "#1f9e12";
-const GREEN_DEEP = "#107c10";
 const GRAY = "#9aa09a";
 const GRAY_SOFT = "#bcc2bc";
+
+// Per-branch color palette
+const BRANCH_COLORS: Record<string, { main: string; deep: string }> = {
+  frontend:     { main: "#2196f3", deep: "#1565c0" },
+  backend:      { main: "#2196f3", deep: "#1565c0" },
+  fullstack:    { main: "#2196f3", deep: "#1565c0" },
+  cybersecurity:{ main: "#ef5350", deep: "#c62828" },
+  it:           { main: "#ef5350", deep: "#c62828" },
+  cloud:        { main: "#1f9e12", deep: "#107c10" },
+  server:       { main: "#1f9e12", deep: "#107c10" },
+};
+
+function branchColor(id: string) {
+  return BRANCH_COLORS[id] ?? { main: "#1f9e12", deep: "#107c10" };
+}
 
 const SPRING = { type: "spring", stiffness: 200, damping: 20, mass: 0.7 } as const;
 
@@ -32,8 +45,6 @@ function polar(r: number, deg: number): [number, number] {
 }
 const baseAngle = (i: number) => -90 + i * SEG;
 
-// Wide invisible wedge per branch — gives each branch a much larger hover/click
-// target than the thin ring arc alone.
 function sectorPath(i: number, rInner: number, rOuter: number, spanDeg: number): string {
   const a0 = baseAngle(i) - spanDeg / 2;
   const a1 = baseAngle(i) + spanDeg / 2;
@@ -59,15 +70,14 @@ function fanPositions(
   });
 }
 
-function Pips({ level }: { level: number }) {
+function Pips({ level, color }: { level: number; color: string }) {
   return (
     <span className="ml-auto flex shrink-0 items-center gap-1">
       {[1, 2, 3].map((p) => (
         <span
           key={p}
-          className={`h-1.5 w-1.5 rounded-full ${
-            p <= level ? "bg-xbox-deep" : "bg-neutral-300"
-          }`}
+          className={`h-1.5 w-1.5 rounded-full ${p <= level ? "" : "bg-neutral-300"}`}
+          style={p <= level ? { backgroundColor: color } : undefined}
         />
       ))}
     </span>
@@ -77,14 +87,23 @@ function Pips({ level }: { level: number }) {
 export default function SkillTree() {
   const [activeId, setActiveId] = useState(skillTree[0].id);
   const active = skillTree.find((b) => b.id === activeId) ?? skillTree[0];
+  const activeColor = branchColor(active.id);
 
   return (
     <div>
       <div className="mb-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-neutral-600">
         <span>Hover a branch to expand it</span>
         <span className="flex items-center gap-1.5">
-          <span className="h-3 w-3 rounded-full border-2 border-xbox-deep" />
-          core
+          <span className="h-3 w-3 rounded-full" style={{ border: "2px solid #2196f3" }} />
+          dev
+        </span>
+        <span className="flex items-center gap-1.5">
+          <span className="h-3 w-3 rounded-full" style={{ border: "2px solid #ef5350" }} />
+          security
+        </span>
+        <span className="flex items-center gap-1.5">
+          <span className="h-3 w-3 rounded-full" style={{ border: "2px solid #1f9e12" }} />
+          infra
         </span>
         <span className="flex items-center gap-1.5">
           <span className="h-3 w-3 rounded-full border-2 border-dashed border-neutral-400" />
@@ -93,7 +112,7 @@ export default function SkillTree() {
       </div>
 
       <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:gap-8">
-        {/* radial hub — always visible */}
+        {/* radial hub */}
         <div className="relative mx-auto w-full max-w-[520px] lg:mx-0 lg:flex-1">
           <svg
             viewBox="0 0 1000 1000"
@@ -109,25 +128,10 @@ export default function SkillTree() {
               </radialGradient>
             </defs>
 
-            {/* enlarged invisible hit areas — hovering anywhere in a branch's
-                wedge selects it (sits below the visible art, so nodes still get
-                their own hover) */}
-            {skillTree.map((b, i) => (
-              <path
-                key={`hit-${b.id}`}
-                d={sectorPath(i, 130, 470, SEG - 2)}
-                fill="transparent"
-                pointerEvents="all"
-                style={{ cursor: "pointer" }}
-                aria-hidden="true"
-                onMouseEnter={() => setActiveId(b.id)}
-                onClick={() => setActiveId(b.id)}
-              />
-            ))}
-
             {/* ring segments */}
             {skillTree.map((b, i) => {
               const on = b.id === activeId;
+              const { main } = branchColor(b.id);
               return (
                 <circle
                   key={`seg-${b.id}`}
@@ -135,17 +139,15 @@ export default function SkillTree() {
                   cy={CENTER}
                   r={RING_R}
                   fill="none"
-                  stroke={on ? GREEN : GRAY_SOFT}
+                  stroke={on ? main : GRAY_SOFT}
                   strokeWidth={on ? RING_W + 6 : RING_W}
                   opacity={on ? 1 : 0.85}
                   strokeDasharray={`${ARC_LEN} ${CIRC - ARC_LEN}`}
                   transform={`rotate(${baseAngle(i) - DRAWN / 2} ${CENTER} ${CENTER})`}
+                  pointerEvents="none"
                   style={{
-                    cursor: "pointer",
                     transition: "stroke 0.3s ease, stroke-width 0.3s ease, opacity 0.3s ease",
                   }}
-                  onMouseEnter={() => setActiveId(b.id)}
-                  onClick={() => setActiveId(b.id)}
                 />
               );
             })}
@@ -168,6 +170,7 @@ export default function SkillTree() {
             {/* branches */}
             {skillTree.map((b, i) => {
               const on = b.id === activeId;
+              const { main, deep } = branchColor(b.id);
               const a = baseAngle(i);
               const [r0x, r0y] = polar(RING_R + RING_W / 2, a);
               const [rx, ry] = polar(ROOT_R, a);
@@ -182,13 +185,11 @@ export default function SkillTree() {
                   key={`branch-${b.id}`}
                   animate={{ opacity: on ? 1 : 0.4 }}
                   transition={{ duration: 0.4, ease: "easeOut" }}
-                  style={{ cursor: "pointer" }}
+                  style={{ pointerEvents: "none" }}
                   tabIndex={0}
                   role="button"
                   aria-label={`${b.name} skills`}
-                  onMouseEnter={() => setActiveId(b.id)}
                   onFocus={() => setActiveId(b.id)}
-                  onClick={() => setActiveId(b.id)}
                 >
                   {/* skill connectors */}
                   {b.skills.map((s, j) => (
@@ -196,15 +197,13 @@ export default function SkillTree() {
                       key={`l-${s.name}`}
                       x1={rx}
                       y1={ry}
-                      animate={{ x2: positions[j][0], y2: positions[j][1], stroke: on ? GREEN_DEEP : GRAY }}
+                      animate={{ x2: positions[j][0], y2: positions[j][1], stroke: on ? deep : GRAY }}
                       transition={{ ...SPRING, delay: delayFor(j) }}
                       strokeWidth={on ? 2.5 : 1.5}
                     />
                   ))}
 
-                  {/* skill nodes (ability badge: frame + glossy disc + glyph).
-                      Position is applied with a real CSS transform — framer's
-                      x/y motion values do not reliably translate SVG <g>. */}
+                  {/* skill nodes */}
                   {b.skills.map((s, j) => (
                     <g
                       key={`n-${s.name}`}
@@ -219,11 +218,10 @@ export default function SkillTree() {
                           transformBox: "fill-box",
                           transformOrigin: "center",
                           transition: "transform 0.3s ease, color 0.25s ease",
-                          color: on ? GREEN_DEEP : GRAY,
+                          color: on ? deep : GRAY,
                           cursor: "pointer",
                         }}
                       >
-                        {/* outer ability frame */}
                         <circle
                           cx={0}
                           cy={0}
@@ -233,7 +231,6 @@ export default function SkillTree() {
                           strokeWidth={1.5}
                           opacity={0.22}
                         />
-                        {/* glossy disc */}
                         <circle
                           cx={0}
                           cy={0}
@@ -243,7 +240,6 @@ export default function SkillTree() {
                           strokeWidth={3}
                           strokeDasharray={s.level >= 2 ? undefined : "5 5"}
                         />
-                        {/* top highlight */}
                         <ellipse
                           cx={0}
                           cy={-NODE_BASE * 0.42}
@@ -252,7 +248,6 @@ export default function SkillTree() {
                           fill="#ffffff"
                           opacity={0.5}
                         />
-                        {/* glyph */}
                         <g
                           transform="translate(-24 -24) scale(2)"
                           fill="none"
@@ -270,7 +265,7 @@ export default function SkillTree() {
                   <motion.line
                     x1={r0x}
                     y1={r0y}
-                    animate={{ x2: rx, y2: ry, stroke: on ? GREEN : GRAY }}
+                    animate={{ x2: rx, y2: ry, stroke: on ? main : GRAY }}
                     transition={{ duration: 0.3 }}
                     strokeWidth={on ? 3 : 2}
                   />
@@ -278,7 +273,7 @@ export default function SkillTree() {
                   <motion.circle
                     cx={rx}
                     cy={ry}
-                    animate={{ r: ROOT_NODE_R, stroke: on ? GREEN_DEEP : GRAY }}
+                    animate={{ r: ROOT_NODE_R, stroke: on ? deep : GRAY }}
                     transition={{ duration: 0.3 }}
                     fill="#ffffff"
                     strokeWidth={on ? 3 : 2}
@@ -292,7 +287,7 @@ export default function SkillTree() {
                     className="font-display"
                     fontWeight={700}
                     fontSize={13}
-                    fill={on ? GREEN_DEEP : "#737373"}
+                    fill={on ? deep : "#737373"}
                     style={{ pointerEvents: "none" }}
                   >
                     {b.monogram}
@@ -300,10 +295,32 @@ export default function SkillTree() {
                 </motion.g>
               );
             })}
+
+            {/* Single topmost hover layer: one gapless wedge per branch covering
+                the whole annulus. Rendered last so it sits above all the visual
+                art — the expanded active branch can never occlude a neighbor's
+                hover target, which previously left the side panel "stuck". */}
+            {skillTree.map((b, i) => (
+              <path
+                key={`hit-${b.id}`}
+                d={sectorPath(i, 130, 470, SEG)}
+                fill="transparent"
+                pointerEvents="all"
+                style={{ cursor: "pointer" }}
+                aria-hidden="true"
+                // onMouseMove re-asserts the branch on every pointer move, so a
+                // missed mouseenter (fast movement, or re-entering from the center
+                // hole / outer corners) can never leave the side panel "stuck".
+                // Setting the same id is a no-op in React, so this is free.
+                onMouseEnter={() => setActiveId(b.id)}
+                onMouseMove={() => setActiveId(b.id)}
+                onClick={() => setActiveId(b.id)}
+              />
+            ))}
           </svg>
         </div>
 
-        {/* info panel — beside the tree, never below it on desktop */}
+        {/* info panel */}
         <div className="w-full lg:w-[330px] lg:shrink-0">
           <div className="overflow-hidden rounded-2xl border border-white/70 bg-white/80 p-5 shadow-tile">
             <AnimatePresence mode="wait">
@@ -315,7 +332,12 @@ export default function SkillTree() {
                 transition={{ duration: 0.22, ease: "easeOut" }}
               >
                 <div className="flex items-center gap-3">
-                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-xbox-green to-xbox-deep font-display text-[11px] font-bold text-white shadow-glow">
+                  <span
+                    className="grid h-10 w-10 shrink-0 place-items-center rounded-xl font-display text-[11px] font-bold text-white shadow-glow"
+                    style={{
+                      background: `linear-gradient(to bottom right, ${activeColor.main}, ${activeColor.deep})`,
+                    }}
+                  >
                     {active.monogram}
                   </span>
                   <div>
@@ -330,7 +352,10 @@ export default function SkillTree() {
                 <ul className="mt-4 space-y-0.5">
                   {active.skills.map((s) => (
                     <li key={s.name} className="flex h-11 items-center gap-3">
-                      <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-neutral-300 bg-white text-xbox-deep">
+                      <span
+                        className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-neutral-300 bg-white"
+                        style={{ color: activeColor.deep }}
+                      >
                         <svg
                           viewBox="0 0 24 24"
                           className="h-5 w-5"
@@ -348,7 +373,7 @@ export default function SkillTree() {
                           {s.note}
                         </span>
                       )}
-                      <Pips level={s.level} />
+                      <Pips level={s.level} color={activeColor.deep} />
                     </li>
                   ))}
                 </ul>

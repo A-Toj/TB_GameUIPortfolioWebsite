@@ -1,5 +1,18 @@
 import { Channel, Project, Role, SkillBranch } from "./types";
 
+// Prefix a /public path with the GitHub Pages basePath when deployed (empty
+// locally). Use for any raw asset URL — images, resume, etc.
+const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+export const asset = (path: string) => `${BASE_PATH}${path}`;
+
+// Photos (resized + EXIF-corrected) live in /public/images.
+export const media = {
+  profile: asset("/images/img_3.jpg"), // home hero + footer avatar
+  about: asset("/images/img_2.jpg"), // about section
+  contact: asset("/images/img_1.jpg"), // contact section
+  projects: asset("/images/img_3.jpg"), // projects section
+};
+
 export const profile = {
   gamertag: "Tanroj Billing",
   tagline: "Cybersecurity • Full-Stack Developer",
@@ -8,8 +21,8 @@ export const profile = {
   gamerscore: 2026, // graduation year, reimagined as a gamerscore
   email: "tanrojb@gmail.com",
   phone: "(209) 216-8047",
-  github: "https://github.com/your-handle",
-  linkedin: "https://linkedin.com/in/your-handle",
+  github: "https://github.com/A-Toj",
+  linkedin: "https://www.linkedin.com/in/tanroj-billing-97a4bb37a",
   resume: `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/resume.pdf`, // drop a PDF into /public to enable
   bio:
     "Computer Science graduate with a Cybersecurity concentration (CSU Stanislaus) and " +
@@ -203,7 +216,7 @@ export const education = {
   coursework: ["Database Management Systems", "Computer Networks"],
 };
 
-function profileLink(_kind: "github" | "linkedin"): string {
+function profileLink(kind: "github" | "linkedin"): string {
   // Centralized so you can swap in real URLs in one place.
-  return "https://github.com/your-handle";
+  return kind === "linkedin" ? profile.linkedin : profile.github;
 }

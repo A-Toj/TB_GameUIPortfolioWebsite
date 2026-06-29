@@ -2,10 +2,11 @@
 
 // GitHub Pages serves a project repo from a subpath:
 //   https://a-toj.github.io/TB_GameUIPortfolioWebsite/
-// In dev we want the site at the root, so basePath is only applied in production.
-const isProd = process.env.NODE_ENV === "production";
+// The basePath is ONLY applied when building for Pages (the CI workflow sets
+// GITHUB_PAGES=true). Local `npm run dev` and local `npm run build` both serve
+// from the root, so the exported site works when opened locally too.
 const repo = "TB_GameUIPortfolioWebsite";
-const basePath = isProd ? `/${repo}` : "";
+const basePath = process.env.GITHUB_PAGES === "true" ? `/${repo}` : "";
 
 const nextConfig = {
   reactStrictMode: true,

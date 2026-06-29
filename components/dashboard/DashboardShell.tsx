@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { channels } from "@/lib/data";
+import { channels, media, profile } from "@/lib/data";
 import { ChannelId } from "@/lib/types";
 import BladeNav from "./BladeNav";
 import GamertagBar from "./GamertagBar";
@@ -73,7 +73,14 @@ export default function DashboardShell() {
       </main>
 
       <footer className="mt-10 flex items-center justify-between border-t border-white/20 pt-4 text-xs text-neutral-200">
-        <span className="hidden sm:inline">Use ← → to switch channels</span>
+        <div className="flex items-center gap-2">
+          <img
+            src={media.profile}
+            alt={profile.gamertag}
+            className="h-7 w-7 rounded-full border border-white/30 object-cover"
+          />
+          <span className="hidden sm:inline">Use ← → to switch channels</span>
+        </div>
         <span>© {new Date().getFullYear()} Tanroj Billing</span>
       </footer>
     </div>
