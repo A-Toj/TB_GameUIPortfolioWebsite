@@ -197,6 +197,10 @@ export default function SkillTree() {
                       key={`l-${s.name}`}
                       x1={rx}
                       y1={ry}
+                      // initial={false}: render at the target x2/y2 on mount instead of
+                      // springing from the SVG origin (0,0) — that mount animation made the
+                      // lines splay out from the top-left corner on a fresh production load.
+                      initial={false}
                       animate={{ x2: positions[j][0], y2: positions[j][1], stroke: on ? deep : GRAY }}
                       transition={{ ...SPRING, delay: delayFor(j) }}
                       strokeWidth={on ? 2.5 : 1.5}
@@ -265,6 +269,7 @@ export default function SkillTree() {
                   <motion.line
                     x1={r0x}
                     y1={r0y}
+                    initial={false}
                     animate={{ x2: rx, y2: ry, stroke: on ? main : GRAY }}
                     transition={{ duration: 0.3 }}
                     strokeWidth={on ? 3 : 2}
@@ -273,6 +278,7 @@ export default function SkillTree() {
                   <motion.circle
                     cx={rx}
                     cy={ry}
+                    initial={false}
                     animate={{ r: ROOT_NODE_R, stroke: on ? deep : GRAY }}
                     transition={{ duration: 0.3 }}
                     fill="#ffffff"
