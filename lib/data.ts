@@ -7,10 +7,10 @@ export const asset = (path: string) => `${BASE_PATH}${path}`;
 
 // Photos (resized + EXIF-corrected) live in /public/images.
 export const media = {
-  profile: asset("/images/img_3.jpg"), // home hero + footer avatar
-  about: asset("/images/img_2.jpg"), // about section
-  contact: asset("/images/img_1.jpg"), // contact section
-  projects: asset("/images/img_3.jpg"), // projects section
+  profile: asset("/images/img_3.webp"), // home hero + footer avatar
+  about: asset("/images/img_4.webp"), // about section
+  contact: asset("/images/img_2.webp"), // contact section
+  projects: asset("/images/img_3.webp"), // projects section
 };
 
 export const profile = {
@@ -27,8 +27,8 @@ export const profile = {
   bio:
     "Computer Science graduate with a Cybersecurity concentration (CSU Stanislaus) and " +
     "hands-on experience in secure web development, relational database design, and IT " +
-    "support. Comfortable across the full stack — from planning to deployment. Google IT " +
-    "Support certified.",
+    "support. Comfortable across the full stack, from planning to deployment. Currently " +
+    "pursuing Google IT Support certification.",
 };
 
 export const channels: Channel[] = [
@@ -46,7 +46,7 @@ export const projects: Project[] = [
     stack: ["PHP", "MariaDB", "SQL", "JavaScript"],
     blurb:
       "A 16-table MariaDB relational database with a PHP/CSS web interface modeling a full " +
-      "car-dealership operation — inventory, customers, sales, appointments, financing, and " +
+      "car-dealership operation: inventory, customers, sales, appointments, financing, and " +
       "manufacturer data.",
     highlights: [
       "Built a multi-filter vehicle search and a browser-based query console supporting SELECT, INSERT, UPDATE, and DELETE against the live database.",
@@ -59,12 +59,12 @@ export const projects: Project[] = [
     title: "Terraria AI Agent",
     stack: ["Python", "OpenCV", "mss"],
     blurb:
-      "A modular Python agent that plays Terraria autonomously from on-screen pixels — pairing " +
+      "A modular Python agent that plays Terraria autonomously from on-screen pixels, pairing " +
       "real-time screen capture with OpenCV computer vision across separate vision, control, and " +
       "decision-making subsystems.",
     highlights: [
       "Behavior modules for navigation, combat, mining, building, and inventory management.",
-      "Pathfinds to the Ocean Biome and defeats the Eye of Cthulhu using only simulated keyboard and mouse input — no game-file or memory modification.",
+      "Pathfinds to the Ocean Biome and defeats the Eye of Cthulhu using only simulated keyboard and mouse input, with no game-file or memory modification.",
     ],
     link: profileLink("github"),
   },
@@ -89,9 +89,9 @@ export const experience: Role[] = [
     location: "Remote",
     period: "June 2026 – Present",
     points: [
-      "Co-founded a web design studio building responsive, custom websites for small businesses — owning the full process from client conversation through design, build, and launch.",
+      "Co-founded a web design studio building responsive, custom websites for small businesses, owning the full process from client conversation through design, build, and launch.",
       "Launched a custom, responsive marketing site for a temperature-controlled freight carrier (billingtrucking.com).",
-      "Currently building an online storefront for a jewelry retailer — the studio's first paying client.",
+      "Currently building an online storefront for a jewelry retailer, the studio's first paying client.",
     ],
   },
   {
@@ -101,7 +101,7 @@ export const experience: Role[] = [
     period: "May 2023 – April 2025",
     points: [
       "Provided IT support and maintained all hardware and software for drivers, in person and remotely.",
-      "Managed logistics paperwork — invoices, bills of lading, and maintenance records — keeping documentation audit-ready.",
+      "Managed logistics paperwork, including invoices, bills of lading, and maintenance records, keeping documentation audit-ready.",
     ],
   },
 ];
@@ -198,19 +198,19 @@ export const skillTree: SkillBranch[] = [
       { name: "Hardware / Software", level: 3, icon: "cpu" },
       { name: "Networking", level: 2, icon: "network" },
       { name: "Troubleshooting", level: 3, icon: "wrench" },
-      { name: "Google IT Support", level: 3, note: "certified", icon: "award" },
+      { name: "Google IT Support", level: 3, note: "in progress", icon: "award" },
     ],
   },
 ];
 
 export const certifications = [
-  { name: "Google IT Support Professional Certificate", year: "2026", status: "Certified" },
+  { name: "Google IT Support Professional Certificate", year: "2026", status: "In progress" },
   { name: "AWS Certified Security – Specialty", year: "2026", status: "In progress" },
 ];
 
 export const education = {
   school: "California State University, Stanislaus",
-  degree: "B.S. Computer Science — Concentration in Cybersecurity",
+  degree: "B.S. Computer Science, Concentration in Cybersecurity",
   location: "Turlock, CA",
   graduation: "Expected May 2026",
   coursework: ["Database Management Systems", "Computer Networks"],

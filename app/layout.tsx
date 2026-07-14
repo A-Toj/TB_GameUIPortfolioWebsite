@@ -16,11 +16,11 @@ const display = Rajdhani({
 });
 
 export const metadata: Metadata = {
-  title: "Tanroj Billing — Dashboard",
+  title: "Tanroj Billing // Dashboard",
   description:
-    "Tanroj Billing — Cybersecurity & full-stack developer. An Xbox 360 dashboard-inspired portfolio.",
+    "Tanroj Billing: Cybersecurity & full-stack developer. An Xbox 360 dashboard-inspired portfolio.",
   openGraph: {
-    title: "Tanroj Billing — Dashboard",
+    title: "Tanroj Billing // Dashboard",
     description:
       "Cybersecurity & full-stack developer. An Xbox 360 dashboard-inspired portfolio.",
     type: "website",
