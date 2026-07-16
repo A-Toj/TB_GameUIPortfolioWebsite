@@ -7,7 +7,7 @@ export const asset = (path: string) => `${BASE_PATH}${path}`;
 
 // Photos (resized + EXIF-corrected) live in /public/images.
 export const media = {
-  profile: asset("/images/img_3.webp"), // home hero + footer avatar
+  profile: asset("/images/img_3_sm.webp"), // small variant: 112px hero + 28px footer avatar
   about: asset("/images/img_4.webp"), // about section
   contact: asset("/images/img_2.webp"), // contact section
   projects: asset("/images/img_3.webp"), // projects section

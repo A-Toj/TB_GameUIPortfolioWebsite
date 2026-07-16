@@ -1,8 +1,13 @@
 "use client";
 
 import { ReactNode } from "react";
+import dynamic from "next/dynamic";
 import ContentTile from "./ContentTile";
-import SkillTree from "./SkillTree";
+
+// Code-split: the skill tree (SVG tree + icon map) only loads when the skills
+// channel is opened, keeping it out of the first-load JS bundle. The 0.32s
+// channel-enter transition covers the chunk fetch, so there is no visible gap.
+const SkillTree = dynamic(() => import("./SkillTree"), { ssr: false });
 import {
   profile,
   projects,
@@ -56,7 +61,13 @@ function StripItem({
 function PhotoTile({ src, alt, label }: { src: string; alt: string; label?: string }) {
   return (
     <div className="relative h-full min-h-[260px] overflow-hidden rounded-2xl border border-white/70 bg-white/80 shadow-tile">
-      <img src={src} alt={alt} className="absolute inset-0 h-full w-full object-cover" />
+      <img
+        src={src}
+        alt={alt}
+        loading="lazy"
+        decoding="async"
+        className="absolute inset-0 h-full w-full object-cover"
+      />
       {label && (
         <span className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/55 to-transparent px-4 pb-3 pt-8 font-display text-sm font-semibold uppercase tracking-wide text-white">
           {label}
@@ -114,6 +125,11 @@ export default function ChannelContent({
             <img
               src={media.profile}
               alt={profile.gamertag}
+              width={112}
+              height={112}
+              // LCP image on the default channel: fetch at high priority.
+              fetchPriority="high"
+              decoding="async"
               className="relative mx-auto h-28 w-28 rounded-2xl object-cover shadow-glow"
             />
             <p className="relative mt-4 text-xs font-semibold uppercase tracking-[0.2em] text-xbox-deep">

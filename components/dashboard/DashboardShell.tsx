@@ -77,6 +77,10 @@ export default function DashboardShell() {
           <img
             src={media.profile}
             alt={profile.gamertag}
+            width={28}
+            height={28}
+            loading="lazy"
+            decoding="async"
             className="h-7 w-7 rounded-full border border-white/30 object-cover"
           />
           <span className="hidden sm:inline">Use ← → to switch channels</span>
