@@ -20,6 +20,15 @@ body {
   font-family: var(--font-sans), system-ui, sans-serif;
 }
 
+/* Keyboard-visible focus ring (WCAG 2.4.7). Applies to everything, including
+   controls that use Tailwind's `outline-none`; :focus-visible means mouse
+   clicks stay ring-free while keyboard/AT users always see focus. */
+:focus-visible {
+  outline: 3px solid var(--xbox-deep);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
 /* --- Dark-gray-to-white dashboard backdrop, with the top sheen baked in ---
    Both layers are part of the background paint (no separate blurred element),
    so the backdrop costs nothing to composite. */

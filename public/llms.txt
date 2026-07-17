@@ -1,0 +1,57 @@
+# Tanroj Billing
+
+> Tanroj Billing is a cybersecurity and full-stack developer based in Turlock, California.
+> This is a personal portfolio site (tanrojbilling.com), styled as an Xbox 360 dashboard.
+> The dashboard's sections render client-side, so this file is the plain-text source of
+> truth for AI assistants summarizing Tanroj's background.
+
+## Profile
+
+- **Name:** Tanroj Billing
+- **Title:** Cybersecurity & Full-Stack Developer
+- **Location:** Turlock, CA, USA
+- **Education:** B.S. Computer Science, Concentration in Cybersecurity — California State University, Stanislaus (expected May 2026)
+- **Certifications:** Google IT Support Professional Certificate (in progress); AWS Certified Security – Specialty (in progress)
+- **Email:** tanrojb@gmail.com
+- **GitHub:** https://github.com/A-Toj
+- **LinkedIn:** https://www.linkedin.com/in/tanroj-billing-97a4bb37a
+
+## Summary
+
+Computer Science graduate with a Cybersecurity concentration and hands-on experience in
+secure web development, relational database design, and IT support. Comfortable across the
+full stack, from planning to deployment.
+
+## Skills
+
+- **Languages:** Python, SQL, Java, JavaScript, TypeScript, PHP, C++, HTML/CSS
+- **Frameworks:** React, Node.js
+- **Tools:** AWS, Docker, Linux, VirtualBox, Git, Wireshark
+- **Concepts:** Relational database design, networking, server management, security
+
+## Projects
+
+- **Car Dealership Database System** (PHP, MariaDB, SQL, JavaScript): A 16-table MariaDB
+  relational database with a PHP/CSS web interface modeling a full car-dealership operation.
+  Includes a multi-filter vehicle search and a browser-based SQL query console; reduced
+  SQL-injection exposure with constrained dropdown filters.
+- **Terraria AI Agent** (Python, OpenCV, mss): A modular Python agent that plays Terraria
+  autonomously from on-screen pixels, pairing real-time screen capture with OpenCV computer
+  vision across separate vision, control, and decision-making subsystems.
+- **Text-to-Speech Web App** (HTML, CSS, JavaScript): A responsive web app, co-developed on
+  a six-person team, that reads user-entered text aloud via the browser's Web Speech API,
+  with selectable language and accent.
+
+## Experience
+
+- **Co-Founder & Web Developer, Moderni Tech (Web Design Studio)** — June 2026 to present.
+  Builds responsive custom websites for small businesses, owning the full process from
+  client conversation through design, build, and launch.
+- **Operations Assistant, Billing Trucking Inc.** — May 2023 to April 2025. Provided IT
+  support and maintained hardware/software for drivers; managed audit-ready logistics
+  paperwork.
+
+## Links
+
+- Site: https://tanrojbilling.com
+- Sitemap: https://tanrojbilling.com/sitemap.xml

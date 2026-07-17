@@ -350,7 +350,7 @@ export default function SkillTree() {
                     <h3 className="font-display text-lg font-semibold leading-tight text-neutral-900">
                       {active.name}
                     </h3>
-                    <p className="text-[11px] uppercase tracking-wider text-neutral-500">
+                    <p className="text-[11px] uppercase tracking-wider text-neutral-600">
                       {active.tagline}
                     </p>
                   </div>

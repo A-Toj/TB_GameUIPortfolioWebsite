@@ -16,7 +16,7 @@ export default function GamertagBar() {
             {profile.status}
           </span>
         </div>
-        <div className="text-[11px] text-neutral-500">
+        <div className="text-[11px] text-neutral-600">
           {profile.gamerscore.toLocaleString()} G • {profile.location}
         </div>
       </div>

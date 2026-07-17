@@ -25,7 +25,7 @@ export default function BladeNav({ channels, active, onSelect }: Props) {
               >
                 <span
                   className={`text-lg transition-colors ${
-                    isActive ? "text-xbox-deep" : "text-neutral-500 group-hover:text-neutral-700"
+                    isActive ? "text-xbox-deep" : "text-neutral-600 group-hover:text-neutral-700"
                   }`}
                   aria-hidden
                 >
@@ -35,7 +35,7 @@ export default function BladeNav({ channels, active, onSelect }: Props) {
                   className={`font-display uppercase tracking-wide transition-all ${
                     isActive
                       ? "text-lg font-semibold text-neutral-900 sm:text-xl"
-                      : "text-sm font-medium text-neutral-500 group-hover:text-neutral-700"
+                      : "text-sm font-medium text-neutral-600 group-hover:text-neutral-700"
                   }`}
                 >
                   {channel.label}

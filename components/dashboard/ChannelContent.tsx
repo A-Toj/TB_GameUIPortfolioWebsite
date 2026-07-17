@@ -241,7 +241,7 @@ export default function ChannelContent({
                 <ContentTile eyebrow={role.period} title={role.title}>
                   <p className="text-neutral-700">
                     {role.org}{" "}
-                    <span className="text-neutral-400">• {role.location}</span>
+                    <span className="text-neutral-600">• {role.location}</span>
                   </p>
                   <Bullets items={role.points} />
                 </ContentTile>
@@ -272,7 +272,7 @@ export default function ChannelContent({
 
             <ContentTile eyebrow="Education" title={education.degree}>
               <p className="text-neutral-700">{education.school}</p>
-              <p className="text-xs text-neutral-500">
+              <p className="text-xs text-neutral-600">
                 {education.location} • {education.graduation}
               </p>
               <p className="mt-2 text-xs text-neutral-600">
@@ -343,13 +343,17 @@ function ContactTile({
       href={href}
       target={external ? "_blank" : undefined}
       rel={external ? "noreferrer" : undefined}
+      aria-label={`${label}: ${value}${external ? " (opens in a new tab)" : ""}`}
       className="group flex h-full flex-col gap-3 rounded-2xl border border-white/70 bg-white/80 p-5 shadow-tile transition hover:-translate-y-1 hover:border-xbox-deep/40 hover:bg-white/90"
     >
-      <span className="grid h-10 w-10 place-items-center rounded-lg bg-xbox-green/25 font-display text-lg text-xbox-deep">
+      <span
+        aria-hidden="true"
+        className="grid h-10 w-10 place-items-center rounded-lg bg-xbox-green/25 font-display text-lg text-xbox-deep"
+      >
         {icon}
       </span>
       <div>
-        <p className="text-[11px] font-semibold uppercase tracking-widest text-neutral-500">
+        <p className="text-[11px] font-semibold uppercase tracking-widest text-neutral-600">
           {label}
         </p>
         <p className="font-display text-lg text-neutral-800">{value}</p>

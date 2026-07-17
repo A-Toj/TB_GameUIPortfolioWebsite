@@ -56,7 +56,13 @@ export default function DashboardShell() {
         <BladeNav channels={channels} active={index} onSelect={select} />
       </div>
 
-      <main className="relative mt-7 flex-1">
+      {/* Announces the active channel to screen readers, since channel
+          switching happens client-side with no page navigation. */}
+      <div aria-live="polite" className="sr-only">
+        {channels[index].label} channel
+      </div>
+
+      <main id="main-content" tabIndex={-1} className="relative mt-7 flex-1 outline-none">
         <AnimatePresence mode="wait" custom={dir}>
           <motion.div
             key={channels[index].id}
